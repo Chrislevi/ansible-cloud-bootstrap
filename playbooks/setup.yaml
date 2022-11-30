@@ -1,0 +1,29 @@
+- hosts: localhost
+  gather_facts: true
+  vars:
+    compartment_id: "{{ lookup('ansible.builtin.env', 'COMPARTMENT_ID') }}"
+  tasks:
+  - name: Fetch local instance facts
+    oracle.oci.oci_compute_instance_facts:
+     compartment_id: "{{ compartment_id }}"
+     auth_type: "instance_principal"
+     display_name: "{{ hostvars[ansible_play_hosts[0]].ansible_nodename }}"
+    register: compute_facts
+
+- name: "Register Instance defined tags"
+    set_fact:
+      defined_tags: "{{ item }}"
+    when: "'Oracle-Tags' not in item.env"
+    loop: "{{ compute_facts.instances[0].defined_tags | dict2items(key_name='env', value_name='tags') }}"
+
+- name: "Replace run.yaml placeholder with the correct playbook name according to instance Type"
+  lineinfile:
+    path: "{{ playbook_dir }}/setup.yaml"
+    regexp: '^- import_playbook:'
+    line: '- import_playbook: "{{ defined_tags.tags.Type }}.yaml"'
+
+- name: "Replace run.yaml placeholder with the correct tags according to instance defined_tags"
+  lineinfile:
+    path: "{{ playbook_dir }}/run.yaml"
+    regexp: '^  vars:$'
+    line: "  vars: { 'defined_tags': {{ defined_tags }} }"

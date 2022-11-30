@@ -1,0 +1,7 @@
+---
+###
+# BEWARE! This is a placeholder playbook
+# import_playbook value is dynamically replaced by playbook/setup.yaml
+###
+- import_playbook: "placeholder.yaml"
+  vars:
