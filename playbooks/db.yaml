@@ -1,0 +1,9 @@
+---
+- import_playbook: common.yaml
+- hosts: localhost
+  roles:
+    - role: mysql
+      when: defined_tags.tags.Subtype == "mysql"
+
+    - role: postgres
+      when: defined_tags.tags.Subtype == "postgres"

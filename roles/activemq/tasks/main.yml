@@ -1,0 +1,3 @@
+---
+- debug:
+    msg: "I'm an example role"

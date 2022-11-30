@@ -1,0 +1,6 @@
+---
+## Run common roles
+- import_playbook: common.yaml
+- hosts: localhost
+  roles:
+    - role: activemq

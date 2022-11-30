@@ -1,0 +1,19 @@
+---
+## Run common roles
+- import_playbook: common.yaml
+- hosts: localhost
+  roles:
+    ## Install hello app
+    - role: backend
+      vars:
+        app: "{{ defined_tags.tags.Subtype }}"
+      when: 
+        - defined_tags.tags.Subtype == "hello"
+
+    ## Install foo app      
+    - role: backend
+      vars:
+        app: "{{ defined_tags.tags.Subtype }}"
+      when: 
+        - defined_tags.tags.Subtype == "foo"
+
